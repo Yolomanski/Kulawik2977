@@ -48,10 +48,10 @@ public class PlayerHealth : MonoBehaviour
         }
 
         // wylacza ruch gracza
-        PlayerMovement playerMovement = GetComponent<PlayerMovement>();
-        if (playerMovement != null)
+        FirstPersonController FirstPersonController = GetComponent<FirstPersonController>();
+        if (FirstPersonController != null)
         {
-            playerMovement.enabled = false;
+            FirstPersonController.enabled = false;
         }
 
         // wywoluje restart gry po określonym czasie
