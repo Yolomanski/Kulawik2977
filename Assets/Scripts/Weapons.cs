@@ -3,13 +3,16 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public float damage = 10f; // ilość obrażeń zadawanych przeciwnikom
-    public float range = 100f; // zasięg promienia
-    public Camera playerCamera; // kamera gracza (do obsługi Raycasta)
+    public float damage = 10f; // Ilość obrażeń zadawanych przeciwnikom
+    public float range = 100f; // Zasięg strzału
+    public GameObject bulletPrefab; // Prefab pocisku
+    public Transform firePoint; // Punkt wystrzału pocisku
+    public float bulletSpeed = 50f; // Prędkość pocisku
+    public Camera playerCamera; // Kamera gracza (do ustalenia kierunku)
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1")) // domyślnie przypisane do lewego przycisku myszy
+        if (Input.GetButtonDown("Fire1")) // Domyślnie przypisane do lewego przycisku myszy
         {
             Shoot();
         }
@@ -17,19 +20,25 @@ public class Weapon : MonoBehaviour
 
     void Shoot()
     {
-        RaycastHit hit;
-
-        // rzucanie promienia od kamery gracza w kierunku środka ekranu
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, range))
+        if (bulletPrefab != null && firePoint != null)
         {
-            Debug.Log($"Trafiono: {hit.collider.name}");
+            // Tworzy pocisk w punkcie firePoint
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
-            // sprawdzenie , czy trafiony obiekt ma komponent EnemyHealth
-            EnemyHealth enemyHealth = hit.collider.GetComponent<EnemyHealth>();
-            if (enemyHealth != null)
+            // Nadaje pociskowi prędkość w kierunku kamery gracza
+            if (rb != null)
             {
-                enemyHealth.TakeDamage(damage);
+                Vector3 shootDirection = playerCamera.transform.forward; // Kierunek z kamery
+                rb.linearVelocity = shootDirection * bulletSpeed;
             }
+
+            // Niszczy pocisk po określonym czasie, jeśli nie trafi w nic
+            Destroy(bullet, 5f);
+        }
+        else
+        {
+            Debug.LogWarning("Prefab pocisku lub firePoint nie został przypisany.");
         }
     }
 }
