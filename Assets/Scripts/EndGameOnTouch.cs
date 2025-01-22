@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class EndGameOnTouch : MonoBehaviour
 {
+    public static bool GameIsPaused = false;
+    public GameObject PauseMenuUi;
+    public bool lockCursor = true;
     // Funkcja wywo³ywana, gdy inny obiekt wejdzie w kolizjê z tym obiektem
     private void OnTriggerEnter(Collider other)
     {
@@ -18,18 +21,23 @@ public class EndGameOnTouch : MonoBehaviour
     // Funkcja koñcz¹ca grê
     private void EndGame()
     {
-        // Mo¿esz dodaæ efekt przejœcia, np. animacjê, efekt dŸwiêkowy, itp.
-        // Na przyk³ad wyœwietlenie ekranu przejœcia, a potem zakoñczenie gry
-
-        // Dodanie prostego komunikatu przed zamkniêciem gry (dla testów)
-        Debug.Log("Gra zakoñczona! Dziêkujemy za grê!");
-
-        // Zamkniêcie gry (dzia³a tylko w wersji zbudowanej, nie w edytorze)
-        Application.Quit();
-
-        // Jeœli chcesz wyjœæ z edytora Unity (dzia³a tylko w edytorze)
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#endif
+        PauseMenuUi.SetActive(false);
+        Time.timeScale = 1f;
+        GameIsPaused = false;
+        lockCursor = true;
+        SetCursorState();
+    }
+    void SetCursorState()
+    {
+        if (lockCursor)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
