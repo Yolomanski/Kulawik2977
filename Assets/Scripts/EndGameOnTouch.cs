@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class EndGameOnTouch : MonoBehaviour
 {
-    public static bool GameIsPaused = false;
-    public GameObject PauseMenuUi;
+    public static bool GameEnd = false;
+    public GameObject EndGameOnTouchUi;
     public bool lockCursor = true;
     // Funkcja wywo³ywana, gdy inny obiekt wejdzie w kolizjê z tym obiektem
     private void OnTriggerEnter(Collider other)
@@ -21,10 +21,10 @@ public class EndGameOnTouch : MonoBehaviour
     // Funkcja koñcz¹ca grê
     private void EndGame()
     {
-        PauseMenuUi.SetActive(false);
-        Time.timeScale = 1f;
-        GameIsPaused = false;
-        lockCursor = true;
+        EndGameOnTouchUi.SetActive(true);
+        Time.timeScale = 0f;
+        GameEnd = true;
+        lockCursor = false;
         SetCursorState();
     }
     void SetCursorState()
