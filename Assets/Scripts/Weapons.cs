@@ -7,7 +7,7 @@ public class Weapon : MonoBehaviour
     public float range = 100f; // Zasięg strzału
     public GameObject bulletPrefab; // Prefab pocisku
     public Transform firePoint; // Punkt wystrzału pocisku
-    public float bulletSpeed = 50f; // Prędkość pocisku
+    public float bulletSpeed = 15f; // Prędkość pocisku
     public Camera playerCamera; // Kamera gracza (do ustalenia kierunku)
 
     void Update()
