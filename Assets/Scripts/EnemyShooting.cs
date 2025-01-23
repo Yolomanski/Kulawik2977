@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyShooting : MonoBehaviour
@@ -17,6 +15,7 @@ public class EnemyShooting : MonoBehaviour
 
     void Start()
     {
+        // Automatically find the player if target is not assigned
         if (target == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -24,7 +23,12 @@ public class EnemyShooting : MonoBehaviour
             {
                 target = player.transform;
             }
+            else
+            {
+                Debug.LogError("No object with 'Player' tag found. Assign a target manually.");
+            }
         }
+
         shootingTimer = shootingInterval;
     }
 
@@ -41,24 +45,29 @@ public class EnemyShooting : MonoBehaviour
 
     void Shoot()
     {
-        if (bulletPrefab != null && shootingPoint != null && target != null)
+        if (bulletPrefab == null || shootingPoint == null || target == null)
         {
-            // Calculate direction to the target
-            Vector3 direction = (target.position - shootingPoint.position).normalized;
+            Debug.LogWarning("Missing bulletPrefab, shootingPoint, or target. Cannot shoot.");
+            return;
+        }
 
-            // Instantiate the bullet
-            GameObject bullet = Instantiate(bulletPrefab, shootingPoint.position, Quaternion.identity);
+        // Calculate the direction to the target
+        Vector3 direction = (target.position - shootingPoint.position).normalized;
 
-            // Add force to the bullet
-            Rigidbody rb = bullet.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.linearVelocity = direction * bulletSpeed;
-            }
+        // Instantiate the bullet
+        GameObject bullet = Instantiate(bulletPrefab, shootingPoint.position, Quaternion.identity);
+        Debug.Log("Bullet instantiated at: " + shootingPoint.position);
+
+        // Add force to the bullet
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = direction * bulletSpeed;
+            Debug.Log("Bullet fired toward target with velocity: " + rb.linearVelocity);
         }
         else
         {
-            Debug.LogWarning("Missing components or target for shooting.");
+            Debug.LogError("Bullet prefab is missing a Rigidbody component.");
         }
     }
 }
