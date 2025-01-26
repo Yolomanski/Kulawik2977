@@ -42,11 +42,7 @@ public class PlayerHealth : MonoBehaviour
     {
         // Wyświetlanie ekranu śmierci
         deathScreen.SetActive(true);
-
-        // Możesz dodać inne efekty, jak np. animację, dźwięk, itp.
-
-        // Dezaktywowanie gracza (można też użyć Destroy() do usunięcia go z gry)
-        gameObject.SetActive(false);
+        Time.timeScale = 0f;
     }
 
     // Funkcja do leczenia gracza
