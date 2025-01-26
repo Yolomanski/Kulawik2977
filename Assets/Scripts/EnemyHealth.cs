@@ -2,28 +2,33 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public float maxHealth = 50f;
+    public float maxHealth = 100f;
     private float currentHealth;
 
-    private void Start()
+    void Start()
     {
         currentHealth = maxHealth;
     }
 
     public void TakeDamage(float damage)
     {
+        Debug.Log($"{gameObject.name} otrzymał {damage} obrażeń.");
         currentHealth -= damage;
-        Debug.Log($"Przeciwnik otrzymał {damage} obrażeń. Pozostałe HP: {currentHealth}");
 
         if (currentHealth <= 0)
         {
+            Debug.Log($"{gameObject.name} zginął. Wywołuję Die().");
             Die();
+        }
+        else
+        {
+            Debug.Log($"Pozostałe zdrowie przeciwnika: {currentHealth}");
         }
     }
 
-    private void Die()
+    void Die()
     {
-        Debug.Log("Przeciwnik zginął!");
-        Destroy(gameObject); // Usunięcie obiektu przeciwnika
+        Debug.Log($"{gameObject.name} został zniszczony!");
+        Destroy(gameObject);
     }
 }

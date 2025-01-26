@@ -2,26 +2,22 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float damage = 10f; // Obra¿enia zadawane graczowi
+    public float damage = 10f;
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Sprawdza, czy trafiono gracza
-        PlayerHealth playerHealth = collision.collider.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
-        {
-            playerHealth.TakeDamage(damage); // Zadaje obra¿enia graczowi
-        }
+        Debug.Log($"Pocisk trafi³ w: {collision.collider.name}");
 
-        // Niszczy pocisk po kolizji
-        Destroy(gameObject);
         EnemyHealth enemyHealth = collision.collider.GetComponent<EnemyHealth>();
         if (enemyHealth != null)
         {
-            enemyHealth.TakeDamage(damage); // Zadaje obra¿enia przeciwnikowi
+            Debug.Log($"Zadajê obra¿enia przeciwnikowi: {collision.collider.name}");
+            enemyHealth.TakeDamage(damage); // Zadaje obra¿enia
+            Destroy(gameObject);           // Usuwa pocisk
         }
-
-        // Niszczy pocisk po kolizji
-        Destroy(gameObject);
+        else
+        {
+            Debug.Log($"Pocisk trafi³ w coœ innego: {collision.collider.name}");
+        }
     }
 }

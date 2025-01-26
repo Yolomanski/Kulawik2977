@@ -1,67 +1,62 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Do obsługi przechodzenia między scenami
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float maxHealth = 100f;
-    private float currentHealth;
-    public GameObject deathScreen; // ekran śmierci (UI)
-    public float restartDelay = 3f; // czas do restartu gry po śmierci
-
-    private bool isDead = false; // czy gracz już zginął?
+    public int maxHealth = 100; // Maksymalne zdrowie gracza
+    private int currentHealth;  // Aktualne zdrowie gracza
+    public GameObject deathScreen; // Panel UI, który pojawi się po śmierci
 
     void Start()
     {
+        // Ustawienie początkowego zdrowia
         currentHealth = maxHealth;
 
-        // ukrywa ekran śmierci na początku
-        if (deathScreen != null)
+        // Ukrycie ekranu śmierci na początku
+        deathScreen.SetActive(false);
+    }
+
+    void Update()
+    {
+        // Wykrywanie, czy gracz otrzymuje obrażenia
+        if (Input.GetKeyDown(KeyCode.Space)) // Testowy input - zmień na własny system obrażeń
         {
-            deathScreen.SetActive(false);
+            TakeDamage(20);  // Przykładowe obrażenia
         }
     }
 
-    public void TakeDamage(float damageAmount)
+    // Funkcja do zadawania obrażeń graczowi
+    public void TakeDamage(int damage)
     {
-        if (isDead) return; // gdy gracz już zginął, ignoruj dalsze obrażenia
-
-        currentHealth -= damageAmount;
-        Debug.Log($"Gracz otrzymał {damageAmount} obrażeń. Pozostałe HP: {currentHealth}");
+        currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
-            Die();
+            currentHealth = 0;
+            Die(); // Gracz umiera
         }
     }
 
-    void Die()
+    // Funkcja wywołana przy śmierci gracza
+    private void Die()
     {
-        if (isDead) return;
+        // Wyświetlanie ekranu śmierci
+        deathScreen.SetActive(true);
 
-        isDead = true;
-        Debug.Log("Gracz zginął!");
+        // Możesz dodać inne efekty, jak np. animację, dźwięk, itp.
 
-        // wyswietla ekran śmierci, przypisz!!!!!!!!!!!!!!!!!!!!!1
-        if (deathScreen != null)
-        {
-            deathScreen.SetActive(true);
-        }
-
-        // wylacza ruch gracza
-        FirstPersonController FirstPersonController = GetComponent<FirstPersonController>();
-        if (FirstPersonController != null)
-        {
-            FirstPersonController.enabled = false;
-        }
-
-        // wywoluje restart gry po określonym czasie
-        Invoke("RestartGame", restartDelay);
+        // Dezaktywowanie gracza (można też użyć Destroy() do usunięcia go z gry)
+        gameObject.SetActive(false);
     }
 
-    void RestartGame()
+    // Funkcja do leczenia gracza
+    public void Heal(int amount)
     {
-        // restartuje bieżącą scenę
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        currentHealth += amount;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
     }
 }
 
