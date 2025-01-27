@@ -31,25 +31,36 @@ public class EnemyAI : MonoBehaviour
 
     void Shoot()
     {
-        if (bulletPrefab != null && firePoint != null)
+        if (bulletPrefab == null || firePoint == null)
         {
-            // Tworzy pocisk w punkcie firePoint
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-            Rigidbody rb = bullet.GetComponent<Rigidbody>();
+            Debug.LogWarning("BulletPrefab lub FirePoint nie jest przypisany!");
+            return;
+        }
 
-            // Nadaje pociskowi prędkość w kierunku celu
-            if (rb != null)
-            {
-                Vector3 direction = (target.position - firePoint.position).normalized;
-                rb.linearVelocity = direction * bulletSpeed;
-            }
+        // Tworzy pocisk
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
-            // Niszczy pocisk po 5 sekundach, jeśli nie trafił w nic
-            Destroy(bullet, 5f);
+        // Ignoruj kolizje między pociskiem a przeciwnikiem
+        Collider enemyCollider = GetComponent<Collider>();
+        Collider bulletCollider = bullet.GetComponent<Collider>();
+
+        if (enemyCollider != null && bulletCollider != null)
+        {
+            Physics.IgnoreCollision(bulletCollider, enemyCollider);
+        }
+
+        // Nadaje pociskowi prędkość w kierunku ognia
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            Vector3 shootingDirection = (target.position - firePoint.position).normalized;
+            rb.linearVelocity = shootingDirection * bulletSpeed;
+
+            Debug.Log($"Pocisk wystrzelony w kierunku: {shootingDirection}");
         }
         else
         {
-            Debug.LogWarning("Prefab pocisku lub firePoint nie został przypisany.");
+            Debug.LogWarning("Prefab pocisku nie posiada Rigidbody!");
         }
     }
 }
