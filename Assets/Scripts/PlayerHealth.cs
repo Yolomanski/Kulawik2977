@@ -6,6 +6,7 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100; // Maksymalne zdrowie gracza
     private int currentHealth;  // Aktualne zdrowie gracza
     public GameObject deathScreen; // Panel UI, który pojawi się po śmierci
+    public bool lockCursor = true;
 
     void Start()
     {
@@ -19,7 +20,7 @@ public class PlayerHealth : MonoBehaviour
     void Update()
     {
         // Wykrywanie, czy gracz otrzymuje obrażenia
-        if (Input.GetKeyDown(KeyCode.Space)) // Testowy input - zmień na własny system obrażeń
+        if (Input.GetKeyDown(KeyCode.Backspace)) // Testowy input - zmień na własny system obrażeń
         {
             TakeDamage(20);  // Przykładowe obrażenia
         }
@@ -42,11 +43,9 @@ public class PlayerHealth : MonoBehaviour
     {
         // Wyświetlanie ekranu śmierci
         deathScreen.SetActive(true);
-
-        // Możesz dodać inne efekty, jak np. animację, dźwięk, itp.
-
-        // Dezaktywowanie gracza (można też użyć Destroy() do usunięcia go z gry)
-        gameObject.SetActive(false);
+        Time.timeScale = 0f;
+        lockCursor = false;
+        SetCursorState();
     }
 
     // Funkcja do leczenia gracza
@@ -56,6 +55,19 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
+        }
+    }
+    void SetCursorState()
+    {
+        if (lockCursor)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }
